@@ -1,0 +1,24 @@
+title: Suspicious PowerShell Execution
+id: b2c3d4e5-f6a7-8901-bcde-f12345678901
+status: experimental
+description: Detects suspicious PowerShell execution related to Atomic Red Team techniques
+author: Joshua Umoren
+date: 2026/09/01
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith: '\powershell.exe'
+        CommandLine|contains:
+            - 'Invoke-AtomicTest'
+            - 'IEX'
+            - 'DownloadString'
+            - 'EncodedCommand'
+    condition: selection
+falsepositives:
+    - Security testing
+level: high
+tags:
+    - attack.execution
+    - attack.t1059.001
