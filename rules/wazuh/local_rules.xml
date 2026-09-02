@@ -1,0 +1,34 @@
+<group name="atomic_redteam,">
+
+  <!-- T1057 - Process Discovery -->
+  <rule id="100001" level="8">
+    <if_group>sysmon</if_group>
+    <field name="win.eventdata.image" type="pcre2">(?i)tasklist\.exe$</field>
+    <description>Process Discovery - Tasklist execution detected (T1057)</description>
+    <mitre>
+      <id>T1057</id>
+    </mitre>
+  </rule>
+
+  <!-- T1059.001 - PowerShell Execution -->
+  <rule id="100002" level="12">
+    <if_group>sysmon</if_group>
+    <field name="win.eventdata.image" type="pcre2">(?i)powershell\.exe$</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)(Invoke-AtomicTest|IEX|DownloadString|EncodedCommand)</field>
+    <description>Suspicious PowerShell Execution detected (T1059.001)</description>
+    <mitre>
+      <id>T1059.001</id>
+    </mitre>
+  </rule>
+
+  <!-- T1082 - System Information Discovery -->
+  <rule id="100003" level="8">
+    <if_group>sysmon</if_group>
+    <field name="win.eventdata.image" type="pcre2">(?i)(sysinfo|systeminfo|wmic)\.exe$</field>
+    <description>System Information Discovery detected (T1082)</description>
+    <mitre>
+      <id>T1082</id>
+    </mitre>
+  </rule>
+
+</group>
