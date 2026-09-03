@@ -4,6 +4,46 @@ A cloud-based Security Operations Center (SOC) detection engineering lab built o
 
 ## Architecture
 
+```
+┌─────────────────────────────────────────────────────────┐
+│                    AWS VPC (us-east-1)                   │
+│                                                          │
+│  ┌─────────────────┐      ┌─────────────────────────┐   │
+│  │  Linux Endpoint  │      │    Windows Endpoint     │   │
+│  │  Ubuntu 24.04   │      │  Windows Server 2022    │   │
+│  │  t3.micro       │      │  t3a.medium             │   │
+│  │                 │      │  + Sysmon v15.21        │   │
+│  │  Wazuh Agent   │      │  + Atomic Red Team      │   │
+│  │  (ID: 001)     │      │  Wazuh Agent (ID: 002)  │   │
+│  └────────┬────────┘      └──────────┬──────────────┘   │
+│           │                          │                   │
+│           │    Port 1514/1515        │                   │
+│           └──────────┬───────────────┘                   │
+│                      ▼                                   │
+│           ┌─────────────────────┐                        │
+│           │   Wazuh Manager     │                        │
+│           │   v4.9.2            │                        │
+│           │   t3a.medium        │                        │
+│           │   44.205.49.142     │                        │
+│           │                     │                        │
+│           │   Custom Rules:     │                        │
+│           │   T1057, T1059.001  │                        │
+│           │   T1082             │                        │
+│           └──────────┬──────────┘                        │
+│                      │                                   │
+│                      ▼                                   │
+│           ┌─────────────────────┐                        │
+│           │   Wazuh Dashboard   │                        │
+│           │   MITRE ATT&CK      │                        │
+│           │   SOC Dashboard     │                        │
+│           │   Threat Hunting    │                        │
+│           └─────────────────────┘                        │
+└─────────────────────────────────────────────────────────┘
+
+Data Flow: Endpoint Events → Sysmon/Audit Logs → Wazuh Agent 
+        → Wazuh Manager (detection rules) → Dashboard/Alerts
+```
+
 - **Wazuh Manager** (t3a.medium) — SIEM/XDR platform
 - **Linux Endpoint** (t3.micro) — Ubuntu 24.04 agent
 - **Windows Endpoint** (t3a.medium) — Windows Server 2022 agent + Sysmon
